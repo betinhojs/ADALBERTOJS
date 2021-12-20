@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h1>Alterar Pergunta</h1>
+        <br>
+        <a href="ex16_IncluirPergunta.html">Inserir Pergunta</a><br>
+        <a href="ex16_alterarPerguntas.html">Alterar Pergunta</a><br>
+        <a href="ex16_listarPerguntas.php">Listar Perguntas</a><br>
+        <a href="ex16_excluirPergunta.html">Excluir Pergunta</a><br>
+        <a href="ex16_detalhePergunta.html">Detalhe de Pergunta</a><br>
+        <br>
+
+        <form action="" method=GET id="cadPergunta">
+            Id: <input type=text name="id" readonly="readonly" id="id"> <br>
+            Pergunta: <input type=text name="pergunta" id="pergunta"> <br>
+            pontos: <input type=text name="pontos" id="pontos"> <br>
+            grau de difilculdade: <input type=text name="grau" id="grau"> <br>
+            <br><br>
+            <input type="button" value="Inserir" onclick="ValidarForm()">
+        </form>
+        <script>
+            function PontoValido(vPonto) {
+                let pattern = /[0-9]+/;
+                return pattern.test(vPonto);
+            }
+
+            function FormValido(pPergunta, pPontos, pGrau) {
+                let msg = "";
+                if (pPergunta == "") {
+                    msg = "Pergunta não pode ser vazio. <br>";
+                }
+                if (!PontoValido(pPontos)) {
+                    msg += "Pontos deve ser numerico. <br>";
+                }
+                if (pGrau == "") {
+                    msg += "Grau não pode ser vazio. <br>";
+                }
+                return msg;
+            }
+            function ValidarForm() {
+                let objForm = document.getElementById("cadPergunta");
+                console.log("objForm: " + objForm.innerHTML);
+                let strPergunta = document.getElementById("pergunta").value;
+                let strPontos = document.getElementById("pontos").value;
+                let strGrau = document.getElementById("grau").value;
+                let strId = document.getElementById("id").value;
+                console.log("Pergunta: " + strPergunta + " Pontos: " + strPontos + " Grau: " + strGrau);
+                let mensagem = FormValido(strPergunta, strPontos, strGrau);
+
+                let objForm2 = {"pergunta": strPergunta, "pontos": strPontos, "grau": strGrau};
+                let objForm3 = {"pergunta": "alo?", "pontos": "2", "grau": "facil"};
+                let objJSON = JSON.stringify(objForm);
+                console.log("JSON: " + objJSON);
+
+                if (mensagem == "") {
+                    console.log("Passou na validação");
+                    EnviarForm(strPergunta, strPontos, strGrau, strId);
+                } else {
+                    document.getElementById("msg").innerHTML = mensagem;
+                }
+            }
+            function EnviarForm(ePergunta, ePontos, eGrau, eId) {
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log("Chegou resposta: " + this.responseText);
+                        let objReturnJSON = JSON.parse(this.responseText);
+                        alert(objReturnJSON.status);
+                        window.location.href = "ex16_listarPerguntas.php";
+                    }
+                };
+                xmlHttp.open("GET", "ex16_alterarPerguntas.php?pergunta=" + ePergunta +
+                        "&pontos=" + ePontos + "&grau=" + eGrau + "&id=" + eId);
+                xmlHttp.send();
+                console.log("Enviei requisição");
+            }
+
+
+            function BuscaDetalhes() {
+                var parametros = window.location.search.substring(1);
+                if (parametros == "") {
+                    alert("Por favor informar o id da pergunta na URL");
+                    return;
+                }
+                var myId = location.search.split('id=')[1] ? location.search.split('id=')[1] : '0';
+                if (myId == '0') {
+                    alert("Por favor informar o id correto da pergunta na URL");
+                    return;
+                }
+
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log("Chegou resposta: " + this.responseText);
+//                        document.getElementById("msg").innerHTML = this.responseText;
+                        let objReturnJSON = JSON.parse(this.responseText);
+                        console.log(objReturnJSON.status);
+                        document.getElementById("id").value = objReturnJSON.status.id;
+                        document.getElementById("pergunta").value = objReturnJSON.status.pergunta;
+                        document.getElementById("pontos").value = objReturnJSON.status.pontos;
+                        document.getElementById("grau").value = objReturnJSON.status.grauDificuldade;
+                    }
+                };
+                xmlHttp.open("GET", "ex16_detalhePergunta.php?id=" + myId);
+                xmlHttp.send();
+            }
+
+            BuscaDetalhes();
+        </script>
+    </body>
+</html>
