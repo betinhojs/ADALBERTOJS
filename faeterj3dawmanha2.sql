@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 04-Nov-2021 às 13:09
--- Versão do servidor: 10.4.18-MariaDB
--- versão do PHP: 7.4.18
+-- Tempo de geração: 21-Dez-2021 às 15:34
+-- Versão do servidor: 10.4.17-MariaDB
+-- versão do PHP: 8.0.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,33 +24,45 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `alunos`
+-- Estrutura da tabela `emprestimos`
 --
 
-CREATE TABLE `alunos` (
-  `nome` varchar(100) COLLATE latin1_general_ci NOT NULL,
-  `matricula` int(20) NOT NULL,
-  `email` varchar(100) COLLATE latin1_general_ci NOT NULL,
-  `cpf` varchar(20) COLLATE latin1_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+CREATE TABLE `emprestimos` (
+  `id` int(11) NOT NULL,
+  `cpf` varchar(20) NOT NULL,
+  `endividamento` int(11) NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `parcelas` int(11) NOT NULL,
+  `garantia` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Extraindo dados da tabela `alunos`
+-- Extraindo dados da tabela `emprestimos`
 --
 
-INSERT INTO `alunos` (`nome`, `matricula`, `email`, `cpf`) VALUES
-('jose da silva', 2021212345, 'ze@gmail.com', '12345678910'),
-('antonio', 2021252874, 'tonho@gmail.com', '45678912322');
+INSERT INTO `emprestimos` (`id`, `cpf`, `endividamento`, `valor`, `parcelas`, `garantia`) VALUES
+(1, '314.235.768-88', 6, '90.99', 12, 'Carro'),
+(3, '123.235.768-88', 12, '800.00', 4, 'Moto');
 
 --
 -- Índices para tabelas despejadas
 --
 
 --
--- Índices para tabela `alunos`
+-- Índices para tabela `emprestimos`
 --
-ALTER TABLE `alunos`
-  ADD PRIMARY KEY (`matricula`);
+ALTER TABLE `emprestimos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `emprestimos`
+--
+ALTER TABLE `emprestimos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

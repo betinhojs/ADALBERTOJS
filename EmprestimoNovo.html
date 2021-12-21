@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <title>Controle de Clientes</title>
+    </head>
+    <body>
+        <h1>Novo Emprestimo</h1>
+        <br>
+        <a href="EmprestimoListar.php">Listar Emprestimos</a><br>
+        <br>
+        <form action="" method=GET id="cadastroEmprestimo">
+            CPF <input type=text name="cpf" id="cpf"> <br>
+            Endividamento <input type="number" min="1" max="30"  name="endividamento" id="endividamento"> <br>
+            Valor: <input type="number" step=".01" name="valor" id="valor"> <br>
+            Parcelas: <input type="number" min="1" max="24" name="parcelas" id="parcelas"> <br>
+            Garantia: <input type="text" name="garantia" id="garantia"> <br>
+            <br><br>
+            <input type="button" value="Inserir" onclick="ValidarForm()">
+        </form>
+        <br>
+        <p id="msg"></p>
+        <script>
+
+            function FormValido(cpf, endividamento, valor, parcelas, garantia) {
+                let msg = "";
+                if (endividamento == "") {
+                    msg = "Endividamento não pode ser vazio. <br>";
+                }
+                if (valor == "") {
+                    msg += "Valor não pode ser vazio. <br>";
+                }
+                if (parcelas == "") {
+                    msg += "Parcelas não pode ser vazio. <br>";
+                }
+                var cpfNumbers = cpf.replace(/\D/g, "");
+                if (cpfNumbers.length != 11) {
+                    msg += "CPF deve conter 11 numeros. <br>";
+                }
+                if (garantia == "") {
+                    msg += "Garantia não pode ser vazio. <br>";
+                }
+
+                return msg;
+            }
+            function ValidarForm() {
+                let objForm = document.getElementById("cadastroEmprestimo");
+
+                let cpf = document.getElementById("cpf").value;
+                let endividamento = document.getElementById("endividamento").value;
+                let valor = document.getElementById("valor").value;
+                let parcelas = document.getElementById("parcelas").value;
+                let garantia = document.getElementById("garantia").value;
+
+                let mensagem = FormValido(cpf, endividamento, valor, parcelas, garantia);
+
+                if (mensagem == "") {
+                    EnviarForm(cpf, endividamento, valor, parcelas, garantia);
+                } else {
+                    document.getElementById("msg").innerHTML = mensagem;
+                }
+            }
+
+            function EnviarForm(cpf, endividamento, valor, parcelas, garantia) {
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log("Chegou resposta: " + this.responseText);
+
+                        let objReturnJSON = JSON.parse(this.responseText);
+                        alert(objReturnJSON.status);
+                        window.location.href = "EmprestimoListar.php";
+
+                    }
+                };
+                xmlHttp.open("GET", "EmprestimoAcoes.php?acao=adicionar"
+                        + "&cpf=" + cpf
+                        + "&endividamento=" + endividamento
+                        + "&valor=" + valor
+                        + "&parcelas=" + parcelas
+                        + "&garantia=" + garantia);
+                xmlHttp.send();
+                console.log("Enviei requisição");
+            }
+        </script>
+    </body>
+</html>

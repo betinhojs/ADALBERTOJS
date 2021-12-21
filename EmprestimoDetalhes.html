@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+         <title>Controle de Emprestimos</title>
+    </head>
+    <body>
+        <h1>Detalhes do Emprestimo</h1>
+        <br>
+        <a href="EmprestimoListar.php">Listar Emprestimos</a><br>
+        <br>
+        <form action="" method=GET id="cadastroCliente">
+            Id <input readonly type=text name="id" id="id"> <br>
+            CPF <input readonly type=text name="cpf" id="cpf"> <br>
+            Endividamento <input readonly type="number" min="1" max="30"  name="endividamento" id="endividamento"> <br>
+            Valor: <input readonly type="number" step=".01" name="valor" id="valor"> <br>
+            Parcelas: <input readonly type="number" min="1" max="24" name="parcelas" id="parcelas"> <br>
+            Garantia: <input readonly type="text" name="garantia" id="garantia"> <br>
+            <br><br>
+
+        </form>
+        <br>
+        <p id="msg"></p>
+        <script>
+            function BuscaDetalhes() {
+                var parametros = window.location.search.substring(1);
+                if (parametros == "") {
+                    alert("Por favor informar o id do Emprestimo na URL");
+                    return;
+                }
+                var myId = location.search.split('id=')[1] ? location.search.split('id=')[1] : '0';
+                if (myId == '0') {
+                    alert("Por favor informar o id correto do Emprestimo na URL");
+                    return;
+                }
+
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+
+                        let objReturnJSON = JSON.parse(this.responseText);
+                        console.log(objReturnJSON.status);
+                        document.getElementById("id").value = objReturnJSON.status.id;
+                        document.getElementById("cpf").value = objReturnJSON.status.cpf;
+                        document.getElementById("endividamento").value = objReturnJSON.status.endividamento;
+                        document.getElementById("valor").value = objReturnJSON.status.valor;
+                        document.getElementById("parcelas").value = objReturnJSON.status.parcelas;
+                        document.getElementById("garantia").value = objReturnJSON.status.garantia;
+                       
+                    }
+                };
+                xmlHttp.open("GET", "EmprestimoAcoes.php?acao=buscar&id=" + myId);
+                xmlHttp.send();
+            }
+
+            BuscaDetalhes();
+        </script>
+    </body>
+</html>
